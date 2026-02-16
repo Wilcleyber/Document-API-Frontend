@@ -8,23 +8,46 @@ export function Dashboard() {
   const navigate = useNavigate();
   const [folders, setFolders] = useState([]);
   const [systemStatus, setSystemStatus] = useState("checking...");
+  const [authError, setAuthError] = useState(null);
   const [userName] = useState(localStorage.getItem("userName"));
   const [role] = useState(localStorage.getItem("userRole"));
+  const token = localStorage.getItem("userToken");
 
-  // Executa assim que a página carrega
+  // Verifica autenticação e carrega dados
   useEffect(() => {
+    if (!token) {
+      setAuthError("Você precisa fazer login para acessar essa página.");
+      navigate("/login", { replace: true });
+      return;
+    }
     loadDashboardData();
-  }, []);
+  }, [token, navigate]);
 
   const loadDashboardData = async () => {
     try {
       const folderData = await dataService.getFolders();
-      setFolders(folderData);
+      
+      // Valida se folders é um array
+      if (Array.isArray(folderData)) {
+        setFolders(folderData);
+      } else if (folderData?.statusCode === 401) {
+        setAuthError("Sua sessão expirou. Faça login novamente.");
+        localStorage.removeItem("userToken");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userName");
+        navigate("/login", { replace: true });
+        return;
+      } else {
+        console.error("Resposta inválida de folders:", folderData);
+        setFolders([]);
+      }
 
       const health = await dataService.getHealth();
-      setSystemStatus(health.status === "ok" ? "Operacional ✅" : "Instável ⚠️");
+      setSystemStatus(health?.status === "ok" ? "Operacional ✅" : "Instável ⚠️");
     } catch (err) {
+      console.error("Erro ao carregar dashboard:", err);
       setSystemStatus("Offline ❌");
+      setFolders([]);
     }
   };
 
@@ -46,10 +69,21 @@ export function Dashboard() {
     }
   };
 
+  // Se houver erro de autenticação, mostrar mensagem
+  if (authError) {
+    return (
+      <div className="dashboard" style={{ textAlign: "center", padding: "2rem" }}>
+        <h2>❌ Erro de Autenticação</h2>
+        <p>{authError}</p>
+        <button onClick={() => navigate("/login", { replace: true })}>Voltar para Login</button>
+      </div>
+    );
+  }
+
   return (
     <div className="dashboard">
       <header>
-        <h1>Olá, {userName}!</h1>
+        <h1>Olá, {userName || "Usuário"}!</h1>
         <p>Status do Sistema: <strong>{systemStatus}</strong></p>
       </header>
       {/* ADIÇÃO AQUI: Só mostra a barra de criação se for admin */}
@@ -58,7 +92,8 @@ export function Dashboard() {
       )}
 
       <section className="folder-grid">
-        {folders.map((folder) => (
+        {Array.isArray(folders) && folders.length > 0 ? (
+          folders.map((folder) => (
           <div key={folder.name} className="folder-card-wrapper">
             <div className="folder-card" onClick={() => navigate(`/folder/${folder.name}`)}>
               <h3>{folder.name}</h3>
@@ -75,7 +110,12 @@ export function Dashboard() {
               </button>
             )}
           </div>
-        ))}
+        ))
+        ) : (
+          <p style={{ gridColumn: "1 / -1", textAlign: "center" }}>
+            {Array.isArray(folders) ? "Nenhuma pasta encontrada." : "Erro ao carregar pastas."}
+          </p>
+        )}
       </section>
 
       {/* LÓGICA DE OURO: Só aparece se for admin */}

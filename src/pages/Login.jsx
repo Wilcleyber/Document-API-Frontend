@@ -1,26 +1,33 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { authService } from "./authService";
 
-export function Login() {
+export function Login({ onLoginSuccess }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(""); // Limpa erros anteriores
+    setIsLoading(true);
 
     try {
       const result = await authService.login(username, password);
       
       if (result.token) {
-        alert(`Bem-vindo, ${result.user.username}!`);
-        window.location.href = "/dashboard"; // Redireciona
+        // Token já foi salvo no authService
+        onLoginSuccess();
+        navigate("/dashboard", { replace: true });
       } else {
         setError(result.message || "Falha no login");
       }
     } catch (err) {
       setError("Servidor offline ou erro de rede.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -43,7 +50,7 @@ export function Login() {
           required 
         />
         
-        <button type="submit">Entrar</button>
+        <button type="submit" disabled={isLoading}>{isLoading ? "Entrando..." : "Entrar"}</button>
       </form>
     </div>
   );

@@ -1,15 +1,18 @@
 import { useNavigate, Link, useLocation } from "react-router-dom";
 
-export function Navbar() {
+export function Navbar({ onLogout }) {
   const navigate = useNavigate();
   const location = useLocation();
   const userName = localStorage.getItem("userName");
   const role = localStorage.getItem("userRole");
 
   const handleLogout = () => {
-    // Em ADS, logout em JWT é simples: destruímos a prova local
-    localStorage.clear(); 
-    navigate("/login");
+    if (onLogout) {
+      onLogout();
+    } else {
+      localStorage.clear(); 
+    }
+    navigate("/login", { replace: true });
   };
 
   // Não mostrar Navbar na página de login
