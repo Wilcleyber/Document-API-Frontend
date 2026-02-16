@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Redirecionando...</title>
+    <script type="text/javascript">
+      // Redirect SPA 404 errors to the index.html with the correct path
+      var pathSegments = window.location.pathname.split('/').filter(Boolean);
+      var isGitHubPages = pathSegments[0] === 'Document-API-Frontend';
+      
+      if (isGitHubPages) {
+        // Reconstrói a URL mantendo o subpath do GitHub Pages
+        var redirect = '/Document-API-Frontend/' + pathSegments.slice(1).join('/');
+        if (window.location.search) redirect += window.location.search;
+        window.location.replace(redirect);
+      } else {
+        // Para outros hosts, redireciona diretamente
+        window.location.replace('/');
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

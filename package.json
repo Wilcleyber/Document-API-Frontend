@@ -17,11 +17,11 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Wilcleyber/Document-API-Frontend/issues"
   },
   "homepage": "https://github.com/Wilcleyber/Document-API-Frontend#readme",
+  "type": "module",
   "dependencies": {
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

@@ -8,7 +8,7 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/Document-API-Frontend/">
       <Navbar /> {/* A Navbar fica fora das Routes para ser fixa */}
       <main className="container">
         <Routes>
