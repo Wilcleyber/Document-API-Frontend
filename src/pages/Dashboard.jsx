@@ -26,10 +26,14 @@ export function Dashboard() {
   const loadDashboardData = async () => {
     try {
       const folderData = await dataService.getFolders();
-      
-      // Valida se folders é um array
-      if (Array.isArray(folderData)) {
-        setFolders(folderData);
+
+      // Normaliza possíveis formatos: array direto ou { folders: [...] }
+      const foldersArray = Array.isArray(folderData)
+        ? folderData
+        : (folderData && Array.isArray(folderData.folders) ? folderData.folders : null);
+
+      if (foldersArray !== null) {
+        setFolders(foldersArray);
       } else if (folderData?.statusCode === 401) {
         setAuthError("Sua sessão expirou. Faça login novamente.");
         localStorage.removeItem("userToken");

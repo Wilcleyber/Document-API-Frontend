@@ -8,7 +8,6 @@ export function Login({ onLoginSuccess }) {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("user");
   const navigate = useNavigate();
 
@@ -55,10 +54,9 @@ export function Login({ onLoginSuccess }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    if (!username || !password || !confirmPassword) return setError('Preencha todos os campos.');
-    if (password !== confirmPassword) return setError('Senha e confirmação não conferem.');
+    if (!username || !password) return setError('Preencha todos os campos.');
     try {
-      const result = await authService.register({ username, password, confirmPassword, role });
+      const result = await authService.register({ username, password, role });
       if (result.user) {
         // Após registro, faz login automático para facilitar testes
         const data = await authService.login(username, password);
@@ -108,7 +106,6 @@ export function Login({ onLoginSuccess }) {
 
         {showRegister && (
           <div style={{ marginTop: '0.5rem' }}>
-            <input type="password" placeholder="Confirme a senha" onChange={(e) => setConfirmPassword(e.target.value)} required />
             <div style={{ marginTop: '0.5rem' }}>
               <label>Tipo de usuário: </label>
               <select value={role} onChange={(e) => setRole(e.target.value)}>

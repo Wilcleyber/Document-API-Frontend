@@ -11,14 +11,19 @@ export const dataService = {
   async getFolders() {
     const res = await fetch(`${API_URL}/folders`, { headers: getAuthHeader() });
     const data = await res.json();
-    
-    // Se não for autenticado (401), retorna erro
+
+    // Se não for autenticado (401) ou outro erro HTTP, retorna objeto de erro
     if (!res.ok) {
       console.error("Erro ao buscar pastas:", res.status, data);
       return { statusCode: res.status, error: data };
     }
-    
-    return data;
+
+    // Normaliza a resposta: aceita { folders: [...] } ou um array diretamente
+    if (Array.isArray(data)) return data;
+    if (data && Array.isArray(data.folders)) return data.folders;
+
+    // Fallback seguro: retorna array vazio
+    return [];
   },
 
   // GET /health (Público ou Privado, dependendo da sua escolha)
