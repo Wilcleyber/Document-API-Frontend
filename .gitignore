@@ -12,8 +12,6 @@ dist/
 .vscode/
 .idea/
 *.log
-.vite.config.ts
-.tsconfig.json
-*.txt
+
 
 
