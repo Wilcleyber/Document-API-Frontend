@@ -1,49 +1,35 @@
 import api from "../services/api";
 
-// Busca raiz da árvore
-export async function getRoot() {
-  const response = await api.get("/nodes/root");
-  return response.data;
-}
+export const nodes_api = {
+  // 1. Busca os itens da raiz (Baseado em GET /items/root)
+  getRoot: async () => {
+    const response = await api.get("/items/root");
+    return response.data;
+  },
 
-// Busca filhos de um node
-export async function getChildren(nodeId: string) {
-  const response = await api.get(`/nodes/${nodeId}/children`);
-  return response.data;
-}
+  // 2. Busca os filhos de uma pasta (Baseado em GET /items/{node_id}/children)
+  getChildren: async (nodeId: string) => {
+    const response = await api.get(`/items/${nodeId}/children`);
+    return response.data;
+  },
 
-// Criação de pasta
-export async function createFolder(name: string) {
-  const response = await api.post("/nodes/folder", { name });
-  return response.data;
-}
+  // 3. Busca um item específico (Baseado em GET /items/{node_id})
+  getNode: async (nodeId: string) => {
+    const response = await api.get(`/items/${nodeId}`);
+    return response.data;
+  },
 
-// Criação de arquivo
-export async function createFile(name: string) {
-  const response = await api.post("/nodes/file", { name });
-  return response.data;
-}
+  // 4. Busca a árvore completa (Baseado em GET /items/tree/full)
+  getFullTree: async () => {
+    const response = await api.get("/items/tree/full");
+    return response.data;
+  },
 
-// Renomear node
-export async function renameNode(nodeId: string, newName: string) {
-  const response = await api.put(`/nodes/${nodeId}/rename`, { newName });
-  return response.data;
-}
-
-// Excluir node
-export async function deleteNode(nodeId: string) {
-  const response = await api.delete(`/nodes/${nodeId}`);
-  return response.data;
-}
-
-// Obter conteúdo de arquivo
-export async function getFileContent(fileId: string) {
-  const response = await api.get(`/files/${fileId}`);
-  return response.data; // conteúdo do arquivo
-}
-
-// Salvar conteúdo de arquivo
-export async function saveFileContent(fileId: string, content: string) {
-  const response = await api.put(`/files/${fileId}`, { content });
-  return response.data;
-}
+  // 5. Busca o caminho (Breadcrumbs) (Baseado em GET /navigation/{node_id}/path)
+  // Note: O prefixo aqui depende de como o navigation_router foi registrado no main.py
+  // Se ele não tiver prefixo no main.py, usamos apenas /navigation ou o que estiver no router dele.
+  getPath: async (nodeId: string) => {
+    const response = await api.get(`/navigation/${nodeId}/path`);
+    return response.data;
+  }
+};
