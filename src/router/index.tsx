@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
 import ExplorerPage from "../pages/ExplorerPage";
 import FilePage from "../pages/FilePage";
@@ -9,6 +9,10 @@ import AdminRoute from "./AdminRoute";
 const Router: React.FC = () => {
   return (
     <Routes>
+      
+      {/* 1. Rota Raiz: Redireciona quem entra no site direto para o login */}
+      <Route path="/" element={<Navigate to="/login" replace />} />
+
       {/* Rota pública */}
       <Route path="/login" element={<LoginPage />} />
 
@@ -40,6 +44,8 @@ const Router: React.FC = () => {
           </AdminRoute>
         }
       />
+      {/* 2. Rota de Fuga: Se o usuário digitar qualquer coisa errada, volta pro login */}
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
 };
