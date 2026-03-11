@@ -1,11 +1,6 @@
 import React, { useState } from "react";
 import { useAuth } from "../auth_state/useAuth";
-import {
-  createFolder,
-  createFile,
-  renameNode,
-  deleteNode,
-} from "../nodes_api";
+import { nodes_api } from "../nodes_api"; // Importe padronizado
 
 interface AdminActionsProps {
   onRefresh: () => void;
@@ -20,7 +15,9 @@ const AdminActions: React.FC<AdminActionsProps> = ({ onRefresh }) => {
   // Criar pasta
   const handleCreateFolder = async () => {
     try {
-      await createFolder("Nova Pasta");
+      // Nota: getChildren costuma precisar de um parentId. 
+      // Se for na raiz, passamos "root".
+      await nodes_api.createFolder("root", "Nova Pasta");
       onRefresh();
     } catch {
       alert("Erro ao criar pasta");
@@ -30,7 +27,7 @@ const AdminActions: React.FC<AdminActionsProps> = ({ onRefresh }) => {
   // Criar arquivo
   const handleCreateFile = async () => {
     try {
-      await createFile("Novo Arquivo.txt");
+      await nodes_api.createFile("root", "Novo Arquivo.txt");
       onRefresh();
     } catch {
       alert("Erro ao criar arquivo");
@@ -41,8 +38,9 @@ const AdminActions: React.FC<AdminActionsProps> = ({ onRefresh }) => {
   const handleRename = async () => {
     if (!targetId || !newName) return;
     try {
-      await renameNode(targetId, newName);
+      await nodes_api.renameNode(targetId, newName);
       onRefresh();
+      setNewName(""); // Limpa o campo após sucesso
     } catch {
       alert("Erro ao renomear item");
     }
@@ -54,8 +52,10 @@ const AdminActions: React.FC<AdminActionsProps> = ({ onRefresh }) => {
     const confirm = window.confirm("Tem certeza que deseja excluir?");
     if (confirm) {
       try {
-        await deleteNode(targetId);
+        // Garantindo que deleteNode existe no seu nodes_api/index.ts
+        await nodes_api.deleteNode(targetId);
         onRefresh();
+        setTargetId(""); // Limpa o campo
       } catch {
         alert("Erro ao excluir item");
       }
@@ -66,40 +66,52 @@ const AdminActions: React.FC<AdminActionsProps> = ({ onRefresh }) => {
   if (role !== "ADMIN") return null;
 
   return (
-    <div style={{ marginTop: "20px" }}>
-      <h3>Ações de Admin</h3>
+    <div style={{ marginTop: "20px", padding: "15px", border: "1px solid #eee", borderRadius: "8px" }}>
+      <h3 style={{ marginTop: 0 }}>Ações de Admin</h3>
 
-      <button onClick={handleCreateFolder}>Criar Pasta</button>
-      <button onClick={handleCreateFile} style={{ marginLeft: "10px" }}>
-        Criar Arquivo
-      </button>
+      <div style={{ marginBottom: "10px" }}>
+        <button onClick={handleCreateFolder}>Criar Pasta na Raiz</button>
+        <button onClick={handleCreateFile} style={{ marginLeft: "10px" }}>
+          Criar Arquivo na Raiz
+        </button>
+      </div>
 
-      <div style={{ marginTop: "15px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", maxWidth: "300px" }}>
         <input
           type="text"
-          placeholder="ID do item"
+          placeholder="ID do item (UUID)"
           value={targetId}
           onChange={(e) => setTargetId(e.target.value)}
+          style={inputStyle}
         />
         <input
           type="text"
           placeholder="Novo nome"
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
+          style={inputStyle}
         />
 
-        <button onClick={handleRename} style={{ marginLeft: "10px" }}>
-          Renomear
-        </button>
-        <button
-          onClick={handleDelete}
-          style={{ marginLeft: "10px", color: "red" }}
-        >
-          Excluir
-        </button>
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button onClick={handleRename} style={{ flex: 1 }}>
+            Renomear
+          </button>
+          <button
+            onClick={handleDelete}
+            style={{ flex: 1, color: "red", border: "1px solid red", background: "none", cursor: "pointer" }}
+          >
+            Excluir
+          </button>
+        </div>
       </div>
     </div>
   );
+};
+
+const inputStyle = {
+  padding: "8px",
+  borderRadius: "4px",
+  border: "1px solid #ccc"
 };
 
 export default AdminActions;

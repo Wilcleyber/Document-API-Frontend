@@ -1,35 +1,54 @@
 import api from "../services/api";
 
-export const nodes_api = {
-  // 1. Busca os itens da raiz (Baseado em GET /items/root)
-  getRoot: async () => {
-    const response = await api.get("/items/root");
-    return response.data;
-  },
+// 1. Definimos as funções individualmente primeiro
+export const getRoot = async () => {
+  const response = await api.get("/items/root");
+  return response.data;
+};
 
-  // 2. Busca os filhos de uma pasta (Baseado em GET /items/{node_id}/children)
-  getChildren: async (nodeId: string) => {
-    const response = await api.get(`/items/${nodeId}/children`);
-    return response.data;
-  },
+export const getChildren = async (nodeId: string) => {
+  const response = await api.get(`/items/${nodeId}/children`);
+  return response.data;
+};
 
-  // 3. Busca um item específico (Baseado em GET /items/{node_id})
-  getNode: async (nodeId: string) => {
-    const response = await api.get(`/items/${nodeId}`);
-    return response.data;
-  },
+export const createFolder = async (parentId: string, name: string) => {
+  const response = await api.post("/items", { parent_id: parentId, name, type: "folder" });
+  return response.data;
+};
 
-  // 4. Busca a árvore completa (Baseado em GET /items/tree/full)
-  getFullTree: async () => {
-    const response = await api.get("/items/tree/full");
-    return response.data;
-  },
+export const createFile = async (parentId: string, name: string) => {
+  const response = await api.post("/items", { parent_id: parentId, name, type: "file" });
+  return response.data;
+};
 
-  // 5. Busca o caminho (Breadcrumbs) (Baseado em GET /navigation/{node_id}/path)
-  // Note: O prefixo aqui depende de como o navigation_router foi registrado no main.py
-  // Se ele não tiver prefixo no main.py, usamos apenas /navigation ou o que estiver no router dele.
-  getPath: async (nodeId: string) => {
-    const response = await api.get(`/navigation/${nodeId}/path`);
+export const renameNode = async (nodeId: string, newName: string) => {
+  const response = await api.patch(`/items/${nodeId}`, { name: newName });
+  return response.data;
+};
+
+export const deleteNode = async (nodeId: string) => {
+    const response = await api.delete(`/items/${nodeId}`);
+    return response.data;
+  };
+
+  export const getFileContent = async (fileId: string) => {
+    const response = await api.get(`/files/${fileId}/content`);
+    return response.data;
+  };
+
+  export const saveFileContent = async (fileId: string, content: string) => {
+    const response = await api.put(`/files/${fileId}/content`, { content });
     return response.data;
   }
+
+// 2. Exportamos o objeto nodes_api contendo todas elas (Para a Opção A que você escolheu)
+export const nodes_api = {
+  getRoot,
+  getChildren,
+  createFolder,
+  createFile,
+  renameNode,
+  deleteNode,
+  getFileContent,
+  saveFileContent
 };
