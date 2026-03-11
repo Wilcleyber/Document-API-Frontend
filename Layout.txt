@@ -1,0 +1,422 @@
+Module 1 — App Bootstrap Module
+
+Nome sugerido: app / main
+
+🎯 Responsabilidade
+
+Ponto de entrada da aplicação frontend.
+
+✅ Contém no código:
+
+Inicialização da aplicação
+
+Configuração global:
+
+URL base da API
+
+Rotas principais
+
+Carregamento inicial
+
+Verificação inicial de autenticação
+
+❌ Não contém:
+
+Lógica de login
+
+Lógica de arquivos
+
+Componentes visuais complexos
+
+🧠 Lógica importante
+
+Ao iniciar:
+
+Verifica se existe token
+
+Se existir → valida com backend
+
+Se inválido → limpa sessão e vai para Login
+
+👉 Copilot NÃO deve:
+
+Colocar lógica de negócio aqui
+
+Fazer chamadas de API específicas
+
+Module 2 — Routing Module
+
+Nome sugerido: router
+
+🎯 Responsabilidade
+
+Controlar navegação e acesso às páginas.
+
+✅ Contém no código:
+
+Definição de rotas:
+
+/login
+
+/explorer
+
+/file/:id
+
+Proteção de rotas (route guards):
+
+Rotas públicas
+
+Rotas privadas
+
+Rotas admin-only (se houver)
+
+🧠 Lógica importante
+
+Se não autenticado → redireciona para /login
+
+Se autenticado → permite navegação
+
+Se token inválido → força logout
+
+❌ Não contém:
+
+Verificação de permissões detalhadas
+
+Chamadas diretas ao backend
+
+👉 Isso evita o erro clássico: tudo misturado no router.
+
+Module 3 — Auth State Module
+
+Nome sugerido: auth_state / session
+
+🎯 Responsabilidade
+
+Gerenciar estado da autenticação no frontend.
+
+✅ Contém no código:
+
+Estado:
+
+isAuthenticated
+
+userId
+
+role (ADMIN / USER)
+
+Métodos:
+
+login()
+
+logout()
+
+restoreSession()
+
+Armazenamento do token
+
+🧠 Lógica importante
+
+Logout:
+
+Remove token
+
+Limpa estado
+
+Redireciona para login
+
+Navegação “voltar” não reativa sessão sem token
+
+❌ Não contém:
+
+UI
+
+Chamadas diretas a endpoints de arquivos
+
+👉 Copilot deve entender:
+isso é estado, não interface.
+
+Module 4 — Auth API Service Module
+
+Nome sugerido: auth_api
+
+🎯 Responsabilidade
+
+Comunicação com endpoints de autenticação do backend.
+
+✅ Contém no código:
+
+Funções:
+
+login(credentials)
+
+validateToken()
+
+Tratamento de erros:
+
+Credenciais inválidas
+
+Token expirado
+
+❌ Não contém:
+
+Estado global
+
+Redirecionamento
+
+UI
+
+👉 Um módulo só para API evita duplicação.
+
+Dica: "No auth_state, use o localStorage para persistir o token, mas use um Context ou um Hook customizado para que o resto do app 'reaja' quando o usuário deslogar. Se o auth_api retornar erro, o auth_state deve ser o único responsável por limpar os dados."
+
+Module 5 — Layout Module
+
+Nome sugerido: layout
+
+🎯 Responsabilidade
+
+Estrutura visual base da aplicação.
+
+✅ Contém no código:
+
+Header (barra superior)
+
+Nome do app
+
+Botão Logout
+
+Indicador de role (Admin / User)
+
+Área principal de conteúdo
+
+Footer (opcional)
+
+🧠 Lógica importante
+
+Logout sempre visível quando autenticado
+
+Layout NÃO muda lógica — só organiza visualmente
+
+❌ Não contém:
+
+Regras de permissão
+
+Chamadas de API
+
+Module 6 — File Explorer Module
+
+Nome sugerido: file_explorer
+
+🎯 Responsabilidade
+
+Visualização da árvore de pastas e arquivos.
+
+✅ Contém no código:
+
+Lista de itens:
+
+Pastas
+
+Arquivos
+
+Navegação:
+
+Entrar em pasta
+
+Voltar
+
+Breadcrumb (caminho atual)
+
+🧠 Lógica importante
+
+Busca filhos via API (/nodes/:id/children)
+
+Estado do diretório atual
+
+Diferencia ícone e comportamento:
+
+Pasta → navega
+
+Arquivo → abre
+
+❌ Não contém:
+
+Conteúdo do arquivo
+
+Criação/exclusão (isso é outro módulo)
+
+Dica: "O file_explorer deve manter apenas o currentFolderId no estado. Sempre que esse ID mudar, o useEffect deve disparar uma chamada para o nodes_api.getChildren(currentFolderId). Isso mantém o componente leve, não importa quão profunda seja a pasta."
+
+Module 7 — File Viewer & Editor Module
+
+Nome sugerido: file_editor
+
+🎯 Responsabilidade
+
+Abrir, exibir e editar arquivos .txt.
+
+✅ Contém no código:
+
+Campo de texto (editor simples)
+
+Botão salvar
+
+Indicador de alterações não salvas
+
+🧠 Lógica importante
+
+Carrega conteúdo via API
+
+Salva via API
+
+Trata erro de permissão:
+
+Se backend negar → mensagem clara
+
+❌ Não contém:
+
+Criação de arquivo
+
+Exclusão
+
+Navegação de pastas
+
+Module 8 — Admin Actions Module
+
+Nome sugerido: admin_actions
+
+🎯 Responsabilidade
+
+UI e lógica de ações exclusivas do ADMIN.
+
+✅ Contém no código:
+
+Botões condicionais:
+
+Criar pasta
+
+Criar arquivo
+
+Renomear
+
+Excluir
+
+Modais de confirmação (ações destrutivas)
+
+🧠 Lógica importante
+
+Só renderiza se role === ADMIN
+
+Toda ação:
+
+Confirma
+
+Chama API
+
+Atualiza Explorer
+
+❌ Não contém:
+
+Lógica de autenticação
+
+Decisão final de permissão (backend decide)
+
+Module 9 — File & Node API Service Module
+
+Nome sugerido: nodes_api
+
+🎯 Responsabilidade
+
+Centralizar chamadas ao backend para:
+
+Nodes
+
+Files
+
+Tree
+
+✅ Contém no código:
+
+Funções:
+
+getRoot()
+
+getChildren(nodeId)
+
+createFolder()
+
+createFile()
+
+renameNode()
+
+deleteNode()
+
+getFileContent()
+
+saveFileContent()
+
+❌ Não contém:
+
+Estado global
+
+UI
+
+Lógica de permissão
+
+👉 Esse módulo é ouro pro Copilot.
+
+Module 10 — Error Handling & Feedback Module
+
+Nome sugerido: feedback / errors
+
+🎯 Responsabilidade
+
+Exibir feedback ao usuário.
+
+✅ Contém no código:
+
+Mensagens de erro
+
+Mensagens de sucesso
+
+Loading states
+
+Tratamento de erros HTTP:
+
+401 → logout
+
+403 → mensagem de permissão
+
+500 → erro genérico
+
+❌ Não contém:
+
+Lógica de negócio
+
+Chamadas diretas de API
+
+Dica: "Implemente um Interceptor (se usar Axios) ou uma função de 'Fetch Global'. Se qualquer chamada de API retornar 401, esse módulo deve automaticamente disparar o logout() do Módulo 3. Isso evita que o usuário fique 'preso' em uma página branca tentando ler dados sem permissão."
+
+Module 11 — Demo Access Module
+
+Nome sugerido: demo_access
+
+🎯 Responsabilidade
+
+Facilitar acesso rápido para recrutadores.
+
+✅ Contém no código:
+
+Botão:
+
+“Entrar como Admin Demo”
+
+“Entrar como User Demo”
+
+Login automático com credenciais pré-definidas
+
+🧠 Lógica importante
+
+Usa fluxo normal de login
+
+Não “bypassa” autenticação

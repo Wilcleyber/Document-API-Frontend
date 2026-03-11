@@ -1,0 +1,14 @@
+# Node
+node_modules/
+dist/
+.vite/
+
+# Ambiente
+.env
+.env.local
+.env.*.local
+
+# Editor
+.vscode/
+.idea/
+*.log

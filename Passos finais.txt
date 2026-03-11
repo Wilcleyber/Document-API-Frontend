@@ -1,0 +1,24 @@
+📋 Layout dos Próximos Passos
+Integração Final dos Módulos
+
+Montar App.tsx com todos os providers e router.
+
+Build para GitHub Pages
+
+Configurar vite.config.ts com base.
+
+Criar workflow ou usar gh-pages para publicar dist/.
+
+Ajustes de CORS no Backend
+
+Garantir que o domínio do GitHub Pages possa acessar a API no Render.
+
+Banco de Dados
+
+Nenhum ajuste no frontend, apenas garantir backend conectado ao Neon.
+
+Testes Automáticos no Frontend
+
+Configurar Jest + React Testing Library.
+
+Criar primeiros testes básicos (login, explorer, editor).
