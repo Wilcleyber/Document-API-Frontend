@@ -1,6 +1,5 @@
 import React from "react";
 import { useAuth } from "../auth_state/useAuth";
-import "./Header.css"; // Vamos criar esse arquivo
 
 const Header: React.FC = () => {
   const { isAuthenticated, role, logout } = useAuth();
