@@ -32,7 +32,7 @@ const LoginPage: React.FC = () => {
       // Note: Verifique se o seu backend retorna 'user_id' ou 'id'
       setSession(data.token, data.user_id || data.id, data.role);
       
-      // Sucesso! Vai para o Explorer
+      console.log("Login OK! Navegando para o explorer...");
       navigate("/explorer"); 
     } catch (error: any) {
       console.error(error);

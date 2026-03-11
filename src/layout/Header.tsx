@@ -16,7 +16,7 @@ const Header: React.FC = () => {
       }}
     >
       {/* Nome do app sempre visível */}
-      <h2>Document API Frontend</h2>
+      <h2>Document-API</h2>
 
       {/* Se autenticado → mostra role e botão logout */}
       {isAuthenticated && (

@@ -1,4 +1,4 @@
-import { api } from "../api"; // instância global do Axios
+import api from "../services/api"; // instância global do Axios
 import { TOKEN_KEY } from "../app/config";
 
 // Tipo das credenciais
