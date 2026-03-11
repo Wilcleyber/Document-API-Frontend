@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Breadcrumb from "./Breadcrumb";
 import { nodes_api } from "../nodes_api";
+import "./FileExplorer.css";
 
 interface NodeItem {
   id: string;
@@ -9,16 +10,15 @@ interface NodeItem {
 }
 
 const FileExplorer: React.FC = () => {
-  // Começamos com "root" que é o ID especial que o seu backend aceita
   const [currentFolderId, setCurrentFolderId] = useState<string>("root");
   const [items, setItems] = useState<NodeItem[]>([]);
   const [pathNames, setPathNames] = useState<string[]>(["Home"]);
+  const [selectedFile, setSelectedFile] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchChildren() {
       try {
         let data;
-        // Se for root, usamos getRoot, se não, usamos getChildren
         if (currentFolderId === "root") {
           data = await nodes_api.getRoot();
         } else {
@@ -34,46 +34,57 @@ const FileExplorer: React.FC = () => {
   }, [currentFolderId]);
 
   const enterFolder = (item: NodeItem) => {
+    console.log("Entrando na pasta ID:", item.id);
     setCurrentFolderId(item.id);
     setPathNames((prev) => [...prev, item.name]);
+    setSelectedFile(null); // limpa seleção ao entrar em nova pasta
   };
 
   const navigateBreadcrumb = (index: number) => {
-    // Se clicar no primeiro (Home/Raiz)
     if (index === 0) {
       setCurrentFolderId("root");
       setPathNames(["Home"]);
+      setSelectedFile(null);
     } else {
-      // NOTA: Para um breadcrumb funcional com IDs reais, 
-      // o ideal seria guardar um array de objetos [{id, name}] no path.
-      // Por enquanto, vamos resetar para a raiz se houver confusão.
       console.warn("Navegação profunda via breadcrumb precisa de mapeamento de IDs.");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div className="explorer-container" style={{ padding: "20px" }}>
       <Breadcrumb path={pathNames} onNavigate={navigateBreadcrumb} />
 
-      <ul style={{ listStyle: "none", padding: 0 }}>
+      <ul style={{ listStyle: "none", padding: 0, marginTop: "20px" }}>
         {items.map((item) => (
-          <li key={item.id} style={{ margin: "10px 0" }}>
-            {item.type === "folder" ? (
-              <button 
-                onClick={() => enterFolder(item)}
-                style={{ cursor: "pointer", background: "none", border: "none", color: "#007bff", fontSize: "16px" }}
-              >
-                📁 <strong>{item.name}</strong>
-              </button>
-            ) : (
-              <span style={{ fontSize: "16px" }}>📄 {item.name}</span>
-            )}
+          <li key={item.id} className="explorer-item">
+            <div
+              onClick={() =>
+                item.type === "folder"
+                  ? enterFolder(item)
+                  : setSelectedFile(item.id)
+              }
+              className={`item-row ${item.type} ${
+                selectedFile === item.id ? "selected" : ""
+              }`}
+            >
+              <span className="icon">{item.type === "folder" ? "📁" : "📄"}</span>
+              <span className="name">{item.name}</span>
+              <span className="item-details">
+                {item.type === "folder" ? "--" : "Arquivo"}
+              </span>
+            </div>
           </li>
         ))}
-        {items.length === 0 && <p>Esta pasta está vazia.</p>}
       </ul>
+
+      {items.length === 0 && (
+        <p style={{ color: "#999", textAlign: "center", marginTop: "40px" }}>
+          Esta pasta está vazia.
+        </p>
+      )}
     </div>
   );
 };
 
 export default FileExplorer;
+

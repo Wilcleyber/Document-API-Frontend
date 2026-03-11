@@ -1,28 +1,18 @@
 import React from "react";
 import Header from "./Header";
+import "./Layout.css";
 
-// Layout base da aplicação
-// - Header sempre no topo
-// - Área principal para conteúdo
-// - Footer opcional
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-      {/* Barra superior */}
+    <div className="app-wrapper">
       <Header />
-
-      {/* Área principal */}
-      <main style={{ flex: 1, padding: "20px" }}>{children}</main>
-
-      {/* Footer opcional */}
-      <footer
-        style={{
-          textAlign: "center",
-          padding: "10px",
-          backgroundColor: "#f1f1f1",
-        }}
-      >
-        <small>© 2026 Document API</small>
+      <main className="main-content">
+        <div className="content-container">
+          {children}
+        </div>
+      </main>
+      <footer className="main-footer">
+        <p>© 2026 Document API • <span className="status-dot"></span> Sistema Ativo</p>
       </footer>
     </div>
   );

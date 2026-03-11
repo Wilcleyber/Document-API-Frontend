@@ -1,35 +1,31 @@
 import React from "react";
 import { useAuth } from "../auth_state/useAuth";
+import "./Header.css"; // Vamos criar esse arquivo
 
 const Header: React.FC = () => {
   const { isAuthenticated, role, logout } = useAuth();
 
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "10px",
-        backgroundColor: "#282c34",
-        color: "white",
-      }}
-    >
-      {/* Nome do app sempre visível */}
-      <h2>Document-API</h2>
-
-      {/* Se autenticado → mostra role e botão logout */}
-      {isAuthenticated && (
-        <div style={{ display: "flex", gap: "15px", alignItems: "center" }}>
-          {/* Indicador de role */}
-          <span>Role: {role}</span>
-
-          {/* Botão logout */}
-          <button onClick={logout} style={{ cursor: "pointer" }}>
-            Logout
-          </button>
+    <header className="main-header">
+      <div className="header-content">
+        {/* Logo / Nome do App */}
+        <div className="logo">
+          <span className="logo-icon">📁</span>
+          <h2 className="logo-text">Document<span>API</span></h2>
         </div>
-      )}
+
+        {/* Bloco de autenticação */}
+        {isAuthenticated && (
+          <div className="user-section">
+            <div className="user-badge">
+              <span className="role-tag">{role}</span>
+            </div>
+            <button className="logout-button" onClick={logout}>
+              Sair
+            </button>
+          </div>
+        )}
+      </div>
     </header>
   );
 };
