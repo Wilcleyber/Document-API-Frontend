@@ -11,8 +11,12 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   // Usando a mesma chave que definimos nos outros módulos
   const token = localStorage.getItem('access_token'); 
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (token && token !== "undefined" && token !== "null") {
+    const cleanToken = token.replace(/"/g, '');
+    config.headers.Authorization = `Bearer ${cleanToken}`;
+    console.log("Enviando Token no Header:", `Bearer ${cleanToken.substring(0, 10)}...`);
+  } else {
+    console.warn("Nenhum token encontrado no localStorage!");
   }
   return config;
 });
