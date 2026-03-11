@@ -1,4 +1,4 @@
-import { api } from "../api"; // instância global do Axios
+import api from "../services/api";
 
 // Busca raiz da árvore
 export async function getRoot() {

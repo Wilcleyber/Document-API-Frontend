@@ -1,8 +1,8 @@
 import React from "react";
-import Router from "./router"; // Ajuste o caminho conforme sua pasta
-import Layout from "./layout/Layout"; 
-import AuthProvider from "./auth_state/AuthProvider"; 
-import FeedbackProvider from "./feedback/FeedbackProvider"; 
+import Router from "../router"; 
+import Layout from "../layout/Layout"; 
+import AuthProvider from "../auth_state/AuthProvider"; 
+import FeedbackProvider from "../feedback/FeedbackProvider"; 
 
 /**
  * O App agora é o ponto de entrada que configura o ambiente.

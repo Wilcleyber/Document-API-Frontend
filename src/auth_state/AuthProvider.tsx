@@ -10,20 +10,23 @@ interface Props {
 const AuthProvider: React.FC<Props> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
-    userId: null,
+    token: null,
+    userid: null,
     role: null,
   });
 
   const navigate = useNavigate();
 
-  const login = (token: string, userid: Union[UUID, str]ing, role: "ADMIN" | "USER") => {
+  // Corrigido: tipos TypeScript puros e nomes consistentes
+  const login = (token: string, userid: string, role: "ADMIN" | "USER") => {
     localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem("user_id", userId);
+    localStorage.setItem("user_id", userid);
     localStorage.setItem("user_role", role);
 
     setAuthState({
       isAuthenticated: true,
-      userId,
+      token,
+      userid,
       role,
     });
   };
@@ -35,7 +38,8 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
     setAuthState({
       isAuthenticated: false,
-      userId: null,
+      token: null,
+      userid: null,
       role: null,
     });
 
@@ -44,18 +48,18 @@ const AuthProvider: React.FC<Props> = ({ children }) => {
 
   const restoreSession = () => {
     const token = localStorage.getItem(TOKEN_KEY);
-    const userId = localStorage.getItem("user_id");
+    const userid = localStorage.getItem("user_id");
     const role = localStorage.getItem("user_role") as "ADMIN" | "USER" | null;
 
-    if (token && userId && role) {
+    if (token && userid && role) {
       setAuthState({
         isAuthenticated: true,
-        userId,
+        token,
+        userid,
         role,
       });
-    } else {
-      logout();
     }
+    // Removi o logout automático aqui para evitar redirecionamentos infinitos no boot
   };
 
   useEffect(() => {
