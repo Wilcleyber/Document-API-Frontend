@@ -124,7 +124,7 @@ const LoginPage: React.FC = () => {
 
           <button className="login-button" type="submit" disabled={isLoading}>
             {isLoading
-              ? "Processando..."
+              ? "API despertando"
               : isRegistering
               ? "Finalizar Cadastro"
               : "Entrar no Sistema"}

@@ -1,0 +1,55 @@
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  height: 400px;
+  margin-top: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  background: #f6f8fa;
+  border-bottom: 1px solid #e1e4e8;
+  border-radius: 8px 8px 0 0;
+}
+
+.editor-filename {
+  font-weight: 600;
+  color: #24292e;
+}
+
+.editor-textarea {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  resize: none;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  outline: none;
+  color: #2f363d;
+}
+
+.btn-save {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-close {
+  background: #d1d5da;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
